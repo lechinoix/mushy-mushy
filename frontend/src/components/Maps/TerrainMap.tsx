@@ -8,14 +8,13 @@ const TerrainMap = () => {
   const mapRef = useRef<mapboxgl.Map>()
 
   useEffect(() => {
-    mapboxgl.accessToken = 'pk.eyJ1IjoibGVjaGlub2l4IiwiYSI6ImNtMjN0cWhnbzBhOWoya3NkY2JnaTMxcDAifQ.OgntNn99Z7_CT0DaboVFoQ'
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoibGVjaGlub2l4IiwiYSI6ImNtMjN0cWhnbzBhOWoya3NkY2JnaTMxcDAifQ.OgntNn99Z7_CT0DaboVFoQ"
 
     mapRef.current = new mapboxgl.Map({
       container: "map",
-      zoom: 14,
-      center: [-114.26608, 32.7213],
-      pitch: 80,
-      bearing: 41,
+      zoom: 6,
+      center: [5.71667, 45.166672],
       style: "mapbox://styles/mapbox/satellite-streets-v12",
     })
 
@@ -27,7 +26,26 @@ const TerrainMap = () => {
         tileSize: 512,
         maxzoom: 14,
       })
+      const avalancheUrl =
+        "http://localhost:8081/geoserver/mmushy/wms?request=GetMap&service=WMS&version=1.1.0&layers=mmushy:avalanche&srs=EPSG:3857&bbox={bbox-epsg-3857}&width=500&height=500&format=image/png&transparent=true"
+      mapRef.current.addSource("avalanche", {
+        type: "raster",
+        tiles: [avalancheUrl.toString()],
+        tileSize: 500,
+      })
       mapRef.current.setTerrain({ source: "mapbox-dem", exaggeration: 1.5 })
+      mapRef.current.addLayer({
+        id: "avalanche",
+        type: "raster",
+        source: "avalanche",
+        paint: {
+          "raster-opacity": 0.6,
+          "background-opacity": 0,
+        },
+        layout: {
+          visibility: "visible",
+        },
+      })
     })
   }, [])
 

@@ -55,6 +55,11 @@ services:
     ports:
       - "8080:8080"
 
+  geoserver:
+    restart: "no"
+    ports:
+      - "8081:8080"
+
   backend:
     restart: "no"
     ports:
